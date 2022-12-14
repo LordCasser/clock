@@ -84,7 +84,7 @@ func (c *Clock) Stop() {
 }
 
 // AddTimer 添加定时器 key为定时器唯一标识
-func (c *Clock) AddTimer(delay time.Duration, key uuid.UUID, cb CallBack, data any) *string {
+func (c *Clock) AddTimer(delay time.Duration, cb CallBack, data any) *string {
 	if delay < 0 {
 		return nil
 	}
