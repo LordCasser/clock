@@ -4,7 +4,6 @@ import (
 	"container/list"
 	"github.com/google/uuid"
 	"log"
-	"sync"
 	"time"
 )
 
@@ -21,8 +20,8 @@ type Clock struct {
 	addTaskSig    chan Task
 	removeTaskSig chan string
 	stopSig       chan bool
-	lock          *sync.Mutex
-	deleteList    []string
+	//lock          *sync.Mutex
+	deleteList []string
 }
 
 type Task struct {
@@ -48,8 +47,8 @@ func New(interval time.Duration, slotNum int, cb func()) *Clock {
 		addTaskSig:    make(chan Task),
 		removeTaskSig: make(chan string),
 		stopSig:       make(chan bool),
-		lock:          &sync.Mutex{},
-		deleteList:    make([]string, 1024),
+		//lock:          &sync.Mutex{},
+		deleteList: make([]string, 1024),
 	}
 
 	clock.initSlots()
@@ -66,13 +65,13 @@ func (c *Clock) initSlots() {
 
 // Start 启动时间轮
 func (c *Clock) Start() {
-	if !c.lock.TryLock() {
-		log.Println("already started")
-		return
-	}
+	//if !c.lock.TryLock() {
+	//	log.Println("already started")
+	//	return
+	//}
 
 	c.ticker = time.NewTicker(c.interval)
-	c.lock.Lock()
+	//c.lock.Lock()
 	go c.start()
 
 }
@@ -112,7 +111,7 @@ func (c *Clock) start() {
 			c.removeTask(key)
 		case <-c.stopSig:
 			c.ticker.Stop()
-			c.lock.Unlock()
+			//c.lock.Unlock()
 			return
 		}
 	}
